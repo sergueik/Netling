@@ -5,24 +5,21 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Netling.Core.Models;
+using Core.Models;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.IO;
 
-namespace Netling.Core
+namespace Core
 {
     public static class UrlJobExtensions
     {
-        public static JobResult<UrlResult> ProcessUrls(this Job<UrlResult> job, int threads, int runs, IEnumerable<string> urls, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            ServicePointManager.UseNagleAlgorithm = false;
-            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            return job.Process(threads, runs, () => Action(urls), cancellationToken);
-        }
 
-        public static JobResult<UrlResult> ProcessUrls(this Job<UrlResult> job, int threads, TimeSpan duration, IEnumerable<string> urls, CancellationToken cancellationToken = default(CancellationToken))
+        public static JobResult<UrlResult> ProcessUrls(this Job<UrlResult> job, Stream args, IEnumerable<string> urls, CancellationToken cancellationToken = default(CancellationToken))
         {
             ServicePointManager.UseNagleAlgorithm = false;
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            return job.Process(threads, duration, () => Action(urls), cancellationToken);
+            return job.Process(args, () => Action(urls), cancellationToken);
         }
 
         private static IEnumerable<Task<UrlResult>> Action(IEnumerable<string> urls)
@@ -48,7 +45,7 @@ namespace Netling.Core
                     var result = await sr.ReadToEndAsync();
                     if (response.StatusCode == HttpStatusCode.OK)
                         return new UrlResult((int)sw.ElapsedMilliseconds, result.Length, startTime, url, Thread.CurrentThread.ManagedThreadId);
-                    
+
                     return new UrlResult(startTime, url);
                 }
             }
