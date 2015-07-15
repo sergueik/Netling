@@ -22,22 +22,10 @@ namespace Client
         private bool running = false;
         private CancellationTokenSource cancellationTokenSource;
         private Task<JobResult<UrlResult>> task;
-        private static string tableName = "";
-        private static string dataFolderPath;
-        private static string database;
-        private static string dataSource;
 
         public MainWindow()
         {
             InitializeComponent();
-
-
-            dataFolderPath = Directory.GetCurrentDirectory();
-            database = String.Format("{0}\\data.db", dataFolderPath);
-            dataSource = "data source=" + database;
-            tableName = "product";
-            createTable();
-
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -47,7 +35,7 @@ namespace Client
                 var timeLimited = false;
                 TimeSpan duration = default(TimeSpan);
                 int runs = 0;
-                TestConnection();
+                
                 var threads = Convert.ToInt32(Threads.SelectionBoxItem);
                 var durationText = (string)((ComboBoxItem)Duration.SelectedItem).Content;
                 StatusProgressbar.IsIndeterminate = false;
@@ -147,48 +135,6 @@ namespace Client
             var result = new ResultWindow(task.Result);
             task = null;
             result.Show();
-        }
-
-
-        public static void createTable()
-        {
-            using (SQLiteConnection conn = new SQLiteConnection(dataSource))
-            {
-                using (SQLiteCommand cmd = new SQLiteCommand())
-                {
-                    cmd.Connection = conn;
-                    conn.Open();
-                    SQLiteHelper sh = new SQLiteHelper(cmd);
-                    sh.DropTable(tableName);
-
-                    SQLiteTable tb = new SQLiteTable(tableName);
-                    tb.Columns.Add(new SQLiteColumn("id", true)); // auto increment 
-                    tb.Columns.Add(new SQLiteColumn("count"));
-                    tb.Columns.Add(new SQLiteColumn("responsetime", ColType.Decimal));
-                    sh.CreateTable(tb);
-                    conn.Close();
-                }
-            }
-        }
-
-        bool TestConnection()
-        {
-            Console.WriteLine(String.Format("Testing database connection {0}...", database));
-            try
-            {
-                using (SQLiteConnection conn = new SQLiteConnection(dataSource))
-                {
-                    conn.Open();
-                    conn.Close();
-                }
-                return true;
-            }
-
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.ToString());
-                return false;
-            }
         }
 
 
