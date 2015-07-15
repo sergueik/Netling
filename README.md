@@ -2,7 +2,6 @@ About
 =====
 Clone of a https://github.com/hallatore/Netling
 
-Changes
-=======
-Modified Job interface to use json serialized arguments  , thus reducing the number of signarures to support
-Added SQLite data dump with load into the OxyPlot.
+Note
+====
+There is no new code developed yet, hence this is not a fork

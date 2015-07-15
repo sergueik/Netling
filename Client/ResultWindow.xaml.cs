@@ -109,8 +109,8 @@ namespace Client
             dataSource = "data source=" + dialog.FileName;
             tableName = "product";
             
-            createTable();
-            TestConnection();
+            SQLiteHelper.createTable(dataSource,tableName);
+            SQLiteHelper.TestConnection(dataSource);
                 var i = 1;
                 var m =
                  Result.Results
@@ -124,112 +124,16 @@ namespace Client
                 	{"responsetime", row.Y}
                 };
 
-                    insert(dic);
+                    SQLiteHelper.InsertPlotData(dataSource,tableName, dic);
                 }
 
                 ResponseTimeGraph.Background = System.Windows.Media.Brushes.Red;
-                var ms = DataLoad();
+                var ms = SQLiteHelper.LoadData(dataSource,tableName);
                 ResponseTimeGraph.Draw(ms);
 
             }
         }
-
-
-        public IEnumerable<DataPoint> DataLoad()
-        {
-            try
-            {
-            	string sql = String.Format("select * from {0}", tableName) ;
-                using (SQLiteConnection conn = new SQLiteConnection(dataSource))
-                {
-                    using (SQLiteCommand cmd = new SQLiteCommand())
-                    {
-                        cmd.Connection = conn;
-                        conn.Open();
-                        SQLiteHelper sh = new SQLiteHelper(cmd);
-                        DataTable res = sh.Select(sql);                        
-                        IEnumerable<DataPoint> ms = from row in res.AsEnumerable()
-                                  orderby row["responsetime"]
-                                  select new DataPoint(Convert.ToDouble(row["count"]), Convert.ToDouble(row["responsetime"]));
-                        ;
-
-                        conn.Close();
-
-                        return ms;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.ToString());
-                return (IEnumerable<DataPoint>)null;
-            }
-
-        }
-        public bool insert(Dictionary<string, object> dic)
-        {
-            try
-            {
-                using (SQLiteConnection conn = new SQLiteConnection(dataSource))
-                {
-                    using (SQLiteCommand cmd = new SQLiteCommand())
-                    {
-                        cmd.Connection = conn;
-                        conn.Open();
-                        SQLiteHelper sh = new SQLiteHelper(cmd);
-                        sh.Insert(tableName, dic);
-                        conn.Close();
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.ToString());
-                return false;
-            }
-        }
-
-                public static void createTable()
-        {
-            using (SQLiteConnection conn = new SQLiteConnection(dataSource))
-            {
-                using (SQLiteCommand cmd = new SQLiteCommand())
-                {
-                    cmd.Connection = conn;
-                    conn.Open();
-                    SQLiteHelper sh = new SQLiteHelper(cmd);
-                    sh.DropTable(tableName);
-
-                    SQLiteTable tb = new SQLiteTable(tableName);
-                    tb.Columns.Add(new SQLiteColumn("id", true)); // auto increment 
-                    tb.Columns.Add(new SQLiteColumn("count"));
-                    tb.Columns.Add(new SQLiteColumn("responsetime", ColType.Decimal));
-                    sh.CreateTable(tb);
-                    conn.Close();
-                }
-            }
-        }
-
-        bool TestConnection()
-        {
-            Console.WriteLine(String.Format("Testing database source connection`n{0}...", dataSource));
-            try
-            {
-                using (SQLiteConnection conn = new SQLiteConnection(dataSource))
-                {
-                    conn.Open();
-                    conn.Close();
-                }
-                return true;
-            }
-
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.ToString());
-                return false;
-            }
-        }
+        
 
     }
 
