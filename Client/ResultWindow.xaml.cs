@@ -109,8 +109,8 @@ namespace Client
             dataSource = "data source=" + dialog.FileName;
             tableName = "product";
             
-            SQLiteHelper.createTable(dataSource,tableName);
-            SQLiteHelper.TestConnection(dataSource);
+            PlotHelper.createTable(dataSource,tableName);
+            PlotHelper.TestConnection(dataSource);
                 var i = 1;
                 var m =
                  Result.Results
@@ -124,11 +124,11 @@ namespace Client
                 	{"responsetime", row.Y}
                 };
 
-                    SQLiteHelper.InsertPlotData(dataSource,tableName, dic);
+                    PlotHelper.InsertPlotData(dataSource,tableName, dic);
                 }
 
                 ResponseTimeGraph.Background = System.Windows.Media.Brushes.Red;
-                var ms = SQLiteHelper.LoadData(dataSource,tableName);
+                var ms = PlotHelper.LoadData(dataSource,tableName);
                 ResponseTimeGraph.Draw(ms);
 
             }
