@@ -15,6 +15,9 @@ using System.IO;
 using Core;
 using Core.Models;
 using NUnit.Framework;
+using Newtonsoft.Json;
+
+
 namespace Client
 {
     public partial class MainWindow : Window
@@ -104,6 +107,9 @@ namespace Client
                 DataContractJsonSerializer argument_serializer =
                   new DataContractJsonSerializer(typeof(InvocationArgs));
                 argument_serializer.WriteObject(argument_stream, new InvocationArgs() { threads = threads, runs = runs, duration = duration });
+                
+                
+                argument_stream = JsonConvert.SerializeObject( new InvocationArgs() { threads = threads, runs = runs, duration = duration } );
                 string test = argument_stream.ToString();
 
                 task = Task.Run(() => job.ProcessUrls((Stream)argument_stream, urls, cancellationToken));

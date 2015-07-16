@@ -10,6 +10,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using NUnit.Framework;
+using Newtonsoft.Json;
 
 namespace Core
 {
@@ -24,20 +25,32 @@ namespace Core
         [DataMember]
         public TimeSpan duration;
     }
+    
+  //  http://stackoverflow.com/questions/30060974/how-to-convert-each-object-in-listexpandoobject-into-its-own-type
+  
+ 
 
+public class InvocationArgsConverter : Newtonsoft.Json.Converters.CustomCreationConverter<InvocationArgs>
+{
+    public override InvocationArgs Create(Type objectType)
+    {
+        return new InvocationArgs();
+    }
+}
     public class Job<T> where T : IResult
     {
         public delegate void ProgressEventHandler(double value);
         public ProgressEventHandler OnProgress { get; set; }
-        public JobResult<T> Process(Stream args, Func<IEnumerable<Task<T>>> processAction, CancellationToken cancellationToken = default(CancellationToken))
+        public JobResult<T> Process(Stream argument_stream, Func<IEnumerable<Task<T>>> processAction, CancellationToken cancellationToken = default(CancellationToken))
         {
 
-            args.Position = 0;
+            argument_stream.Position = 0;
             DataContractJsonSerializer argument_serializer =
      new DataContractJsonSerializer(typeof(InvocationArgs));
             // TODO - better detect subnormal launch conditions
             
-            InvocationArgs _invocation_arguments = (InvocationArgs)argument_serializer.ReadObject(args);
+            InvocationArgs _invocation_arguments = (InvocationArgs)argument_serializer.ReadObject(argument_stream);
+            _invocation_arguments = JsonConvert.DeserializeObject<InvocationArgs>( argument_stream, InvocationArgsConverter );
             #pragma warning disable 612
             Assert.IsInstanceOfType(typeof(TimeSpan), _invocation_arguments.duration);
             Assert.IsInstanceOfType(typeof(int), _invocation_arguments.runs);
