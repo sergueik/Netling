@@ -9,6 +9,7 @@ using Core.Models;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using NUnit.Framework;
 
 namespace Core
 {
@@ -32,25 +33,28 @@ namespace Core
         {
 
             args.Position = 0;
-            DataContractJsonSerializer ser =
+            DataContractJsonSerializer argument_serializer =
      new DataContractJsonSerializer(typeof(InvocationArgs));
-            InvocationArgs _ia = (InvocationArgs)ser.ReadObject(args);
-
-            if (_ia.runs == 0)
+            // TODO - better detect subnormal launch conditions
+            
+            InvocationArgs _invocation_arguments = (InvocationArgs)argument_serializer.ReadObject(args);
+            #pragma warning disable 612
+            Assert.IsInstanceOfType(typeof(TimeSpan), _invocation_arguments.duration);
+            Assert.IsInstanceOfType(typeof(int), _invocation_arguments.runs);
+            Assert.IsInstanceOfType(typeof(int), _invocation_arguments.threads);
+            Assert.IsNotNull(_invocation_arguments.threads);
+#pragma warning restore 612
+            if (_invocation_arguments.runs == 0)
             {
-                _ia.runs = 10;
+                _invocation_arguments.runs = 10;
             }
-            if (_ia.duration.Seconds == 0)
+            if (_invocation_arguments.duration.Seconds == 0)
             {
-                _ia.duration = TimeSpan.FromSeconds(10);
+                _invocation_arguments.duration = TimeSpan.FromSeconds(10);
             }
 
-            // TODO - better detect subnormal launch conditions 
-            Console.WriteLine("Deserialized Invocation Args:");
-            Console.WriteLine("Threads: " + _ia.threads);
-            Console.Write("runs=" + _ia.runs);
-            Console.WriteLine("Duration=" + _ia.duration);
-            return Process(_ia.threads, _ia.runs, _ia.duration, processAction, cancellationToken);
+
+            return Process(_invocation_arguments.threads, _invocation_arguments.runs, _invocation_arguments.duration, processAction, cancellationToken);
 
         }
 

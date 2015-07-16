@@ -18,7 +18,8 @@ using System.Runtime.Serialization.Json;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-
+using NUnit.Framework;
+    
 namespace Client
 {
     public partial class ResultWindow : Window
@@ -127,9 +128,9 @@ namespace Client
                     PlotHelper.InsertPlotData(dataSource,tableName, dic);
                 }
 
-                ResponseTimeGraph.Background = System.Windows.Media.Brushes.Red;
-                var ms = PlotHelper.LoadData(dataSource,tableName);
-                ResponseTimeGraph.Draw(ms);
+                //ResponseTimeGraph.Background = System.Windows.Media.Brushes.Red;
+                //var ms = PlotHelper.LoadData(dataSource,tableName);
+                //ResponseTimeGraph.Draw(ms);
 
             }
         }

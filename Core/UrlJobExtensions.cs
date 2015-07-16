@@ -49,7 +49,7 @@ namespace Core
                     return new UrlResult(startTime, url);
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return new UrlResult(startTime, url);
             }

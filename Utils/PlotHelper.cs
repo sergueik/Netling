@@ -35,6 +35,20 @@ namespace SQLite.Utils
                                   orderby row["responsetime"]
                                   select new DataPoint(Convert.ToDouble(row["count"]), Convert.ToDouble(row["responsetime"]));
                         ;
+                        
+ 
+// DataSetExtensions is not available for some  reason, loop through the data
+/*
+ 
+*/
+                        List<DataPoint> ms2 = new List<DataPoint>();
+                        foreach (DataRow row in res.Rows) {
+                            ms2.Add(new DataPoint(Convert.ToDouble(row["count"]), Convert.ToDouble(row["responsetime"])));
+                        }
+
+     
+
+
 
                         conn.Close();
 

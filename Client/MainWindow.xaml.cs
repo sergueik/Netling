@@ -14,7 +14,7 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using Core;
 using Core.Models;
-
+using NUnit.Framework;
 namespace Client
 {
     public partial class MainWindow : Window
@@ -35,7 +35,7 @@ namespace Client
                 var timeLimited = false;
                 TimeSpan duration = default(TimeSpan);
                 int runs = 0;
-                
+
                 var threads = Convert.ToInt32(Threads.SelectionBoxItem);
                 var durationText = (string)((ComboBoxItem)Duration.SelectedItem).Content;
                 StatusProgressbar.IsIndeterminate = false;
@@ -83,6 +83,10 @@ namespace Client
 
                 if (!urls.Any())
                     return;
+                if (!timeLimited)
+                {
+                    duration = TimeSpan.FromSeconds(0);
+                }
 
                 Threads.IsEnabled = false;
                 Duration.IsEnabled = false;
@@ -96,12 +100,13 @@ namespace Client
                 StatusProgressbar.Visibility = Visibility.Visible;
                 job.OnProgress += OnProgress;
 
-                MemoryStream args = new MemoryStream();
-                DataContractJsonSerializer ser =
+                MemoryStream argument_stream = new MemoryStream();
+                DataContractJsonSerializer argument_serializer =
                   new DataContractJsonSerializer(typeof(InvocationArgs));
-                ser.WriteObject(args, new InvocationArgs() { threads = threads, runs = runs, duration = duration });
+                argument_serializer.WriteObject(argument_stream, new InvocationArgs() { threads = threads, runs = runs, duration = duration });
+                string test = argument_stream.ToString();
 
-                task = Task.Run(() => job.ProcessUrls((Stream)args, urls, cancellationToken));
+                task = Task.Run(() => job.ProcessUrls((Stream)argument_stream, urls, cancellationToken));
 
                 // TaskAwaiter Structure
                 System.Runtime.CompilerServices.TaskAwaiter<JobResult<UrlResult>> awaiter = task.GetAwaiter();

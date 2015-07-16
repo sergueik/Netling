@@ -41,9 +41,9 @@ namespace Client
                 IsZoomEnabled = false,
                 IsPanEnabled = false
             });
-
+#pragma warning disable 612
             var ls = new LineSeries(OxyColor.Parse("#ff0079c5"));
-
+#pragma warning restore 612
             foreach (var point in points)
             {
                 ls.Points.Add(point);
