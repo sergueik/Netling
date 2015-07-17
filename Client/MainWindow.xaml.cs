@@ -103,17 +103,14 @@ namespace Client
                 StatusProgressbar.Visibility = Visibility.Visible;
                 job.OnProgress += OnProgress;
 
-                MemoryStream argument_stream = new MemoryStream();
-                DataContractJsonSerializer argument_serializer =
-                  new DataContractJsonSerializer(typeof(InvocationArgs));
-                argument_serializer.WriteObject(argument_stream, new InvocationArgs() { threads = threads, runs = runs, duration = duration });
-                
-                
-                argument_stream = JsonConvert.SerializeObject( new InvocationArgs() { threads = threads, runs = runs, duration = duration } );
-                string test = argument_stream.ToString();
+                //MemoryStream argument_stream = new MemoryStream();
+                //DataContractJsonSerializer argument_serializer =
+                //  new DataContractJsonSerializer(typeof(InvocationArgs));
+                //argument_serializer.WriteObject(argument_stream, new InvocationArgs() { threads = threads, runs = runs, duration = duration });
+                //task = Task.Run(() => job.ProcessUrls((Stream)argument_stream, urls, cancellationToken));
 
-                task = Task.Run(() => job.ProcessUrls((Stream)argument_stream, urls, cancellationToken));
-
+                string argument_string = JsonConvert.SerializeObject(new InvocationArgs() { threads = threads, runs = runs, duration = duration });
+                task = Task.Run(() => job.ProcessUrls(argument_string, urls, cancellationToken));
                 // TaskAwaiter Structure
                 System.Runtime.CompilerServices.TaskAwaiter<JobResult<UrlResult>> awaiter = task.GetAwaiter();
                 awaiter.OnCompleted(JobCompleted);

@@ -25,18 +25,15 @@ namespace Core
         [DataMember]
         public TimeSpan duration;
     }
-    
-  //  http://stackoverflow.com/questions/30060974/how-to-convert-each-object-in-listexpandoobject-into-its-own-type
-  
- 
 
-public class InvocationArgsConverter : Newtonsoft.Json.Converters.CustomCreationConverter<InvocationArgs>
-{
-    public override InvocationArgs Create(Type objectType)
+    //  http://stackoverflow.com/questions/30060974/how-to-convert-each-object-in-listexpandoobject-into-its-own-type
+    public class InvocationArgsConverter : Newtonsoft.Json.Converters.CustomCreationConverter<InvocationArgs>
     {
-        return new InvocationArgs();
+        public override InvocationArgs Create(Type objectType)
+        {
+            return new InvocationArgs();
+        }
     }
-}
     public class Job<T> where T : IResult
     {
         public delegate void ProgressEventHandler(double value);
@@ -45,13 +42,13 @@ public class InvocationArgsConverter : Newtonsoft.Json.Converters.CustomCreation
         {
 
             argument_stream.Position = 0;
+
             DataContractJsonSerializer argument_serializer =
      new DataContractJsonSerializer(typeof(InvocationArgs));
-            // TODO - better detect subnormal launch conditions
-            
+
             InvocationArgs _invocation_arguments = (InvocationArgs)argument_serializer.ReadObject(argument_stream);
-            _invocation_arguments = JsonConvert.DeserializeObject<InvocationArgs>( argument_stream, InvocationArgsConverter );
-            #pragma warning disable 612
+
+#pragma warning disable 612
             Assert.IsInstanceOfType(typeof(TimeSpan), _invocation_arguments.duration);
             Assert.IsInstanceOfType(typeof(int), _invocation_arguments.runs);
             Assert.IsInstanceOfType(typeof(int), _invocation_arguments.threads);
@@ -65,10 +62,28 @@ public class InvocationArgsConverter : Newtonsoft.Json.Converters.CustomCreation
             {
                 _invocation_arguments.duration = TimeSpan.FromSeconds(10);
             }
-
-
             return Process(_invocation_arguments.threads, _invocation_arguments.runs, _invocation_arguments.duration, processAction, cancellationToken);
+        }
 
+
+        public JobResult<T> Process(string argument_string, Func<IEnumerable<Task<T>>> processAction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            InvocationArgs _invocation_arguments = JsonConvert.DeserializeObject<InvocationArgs>(argument_string, new InvocationArgsConverter());
+#pragma warning disable 612
+            Assert.IsInstanceOfType(typeof(TimeSpan), _invocation_arguments.duration);
+            Assert.IsInstanceOfType(typeof(int), _invocation_arguments.runs);
+            Assert.IsInstanceOfType(typeof(int), _invocation_arguments.threads);
+            Assert.IsNotNull(_invocation_arguments.threads);
+#pragma warning restore 612
+            if (_invocation_arguments.runs == 0)
+            {
+                _invocation_arguments.runs = 10;
+            }
+            if (_invocation_arguments.duration.Seconds == 0)
+            {
+                _invocation_arguments.duration = TimeSpan.FromSeconds(10);
+            }
+            return Process(_invocation_arguments.threads, _invocation_arguments.runs, _invocation_arguments.duration, processAction, cancellationToken);
         }
 
         private JobResult<T> Process(int threads, int runs, TimeSpan duration, Func<IEnumerable<Task<T>>> processAction, CancellationToken cancellationToken = default(CancellationToken))
@@ -116,11 +131,9 @@ public class InvocationArgsConverter : Newtonsoft.Json.Converters.CustomCreation
                             }
                         }
                     }
-
                     results.Enqueue(result);
                     resetEvent.Set();
                 }, i);
-
                 events.Add(resetEvent);
             }
 

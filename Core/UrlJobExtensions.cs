@@ -15,11 +15,18 @@ namespace Core
     public static class UrlJobExtensions
     {
 
-        public static JobResult<UrlResult> ProcessUrls(this Job<UrlResult> job, Stream args, IEnumerable<string> urls, CancellationToken cancellationToken = default(CancellationToken))
+        public static JobResult<UrlResult> ProcessUrls(this Job<UrlResult> job, string arguments_string, IEnumerable<string> urls, CancellationToken cancellationToken = default(CancellationToken))
         {
             ServicePointManager.UseNagleAlgorithm = false;
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            return job.Process(args, () => Action(urls), cancellationToken);
+            return job.Process(arguments_string, () => Action(urls), cancellationToken);
+        }
+
+    	public static JobResult<UrlResult> ProcessUrls(this Job<UrlResult> job, Stream arguments_stream, IEnumerable<string> urls, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ServicePointManager.UseNagleAlgorithm = false;
+            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+            return job.Process(arguments_stream, () => Action(urls), cancellationToken);
         }
 
         private static IEnumerable<Task<UrlResult>> Action(IEnumerable<string> urls)
@@ -30,7 +37,6 @@ namespace Core
         private static async Task<UrlResult> GetResult(string url)
         {
             var startTime = DateTime.Now;
-
             try
             {
                 var sw = new Stopwatch();
