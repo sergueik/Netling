@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Data.SQLite;
 using SQLite.Utils;
 using System.Text.RegularExpressions;
 using System.Threading;

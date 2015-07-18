@@ -74,24 +74,14 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.2015.1.943-alpha\lib\net45\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Xwt">
-      <HintPath>..\packages\OxyPlot.Xwt.2015.1.943-alpha\lib\net45\OxyPlot.Xwt.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Xwt">
-      <HintPath>..\packages\OxyPlot.Xwt.2015.1.943-alpha\lib\net45\Xwt.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Job.cs" />

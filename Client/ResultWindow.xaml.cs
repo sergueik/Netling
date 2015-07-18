@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Data;
-using System.Data.SQLite;
 using SQLite.Utils;
 
 using System.Linq;
