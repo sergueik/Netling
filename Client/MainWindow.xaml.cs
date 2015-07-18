@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using SQLite.Utils;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,9 +7,6 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.IO;
 using Core;
 using Core.Models;
 using NUnit.Framework;
@@ -143,7 +139,5 @@ namespace Client
             task = null;
             result.Show();
         }
-
-
     }
 }
