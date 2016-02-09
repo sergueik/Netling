@@ -33,14 +33,18 @@ namespace Netling.Client
             InitializeComponent();
             Result = result;
 
-            TotalRequests.Text = result.Count.ToString(CultureInfo.InvariantCulture);
-            RequestsPerSecond.Text = string.Format("{0:0}", result.JobsPerSecond);
-            ResponseTime.Text = string.Format("{0:0}", result.Results.Where(r => !r.IsError).DefaultIfEmpty(new UrlResult(0, 0, DateTime.Now, null, 0)).Average(r => r.ResponseTime));
-            Elapsed.Text = string.Format("{0:0}", result.ElapsedMilliseconds);
+            TotalRequests.Text = string.Format("{0:#,0}", result.Count);
+            RequestsPerSecond.Text = string.Format("{0:#,0}", result.JobsPerSecond);
+            Elapsed.Text = string.Format("{0:#,0}", result.ElapsedMilliseconds);
             Bandwidth.Text = string.Format("{0:0}", Math.Round(result.BytesPrSecond * 8 / 1024 / 1024, MidpointRounding.AwayFromZero));
-            Errors.Text = result.Errors.ToString(CultureInfo.InvariantCulture);
+            Errors.Text = string.Format("{0:#,0}", result.Errors);
 
-            //Title = string.Format("{0} threads, {1:0.#} seconds duration & {2} URLs", result.Threads, result.ElapsedMilliseconds / 1000, result.Results.Select(r => r.Url).Distinct().Count());
+            var avgResponseTime = result.Results.Where(r => !r.IsError).DefaultIfEmpty(new UrlResult(0, 0, DateTime.Now, null, 0)).Average(r => r.ResponseTime);
+
+            if (avgResponseTime > 5)
+                ResponseTime.Text = string.Format("{0:#,0}", avgResponseTime);
+            else
+                ResponseTime.Text = string.Format("{0:0.00}", avgResponseTime);
 
             LoadUrlSummary();
             LoadGraphs();
@@ -50,13 +54,15 @@ namespace Netling.Client
         private void LoadGraphs()
         {
             long startTime = 0;
+            var max = (int)Math.Floor(Result.ElapsedMilliseconds / 1000);
 
             if (Result.Results.Any())
                 startTime = Result.Results.First().StartTime.Ticks;
 
             var result = Result.Results
                 .Where(r => !r.IsError)
-                .GroupBy(r => ((r.StartTime.Ticks - startTime) / 10000 + r.ResponseTime) / 1000)
+                .GroupBy(r => ((r.StartTime.Ticks - startTime) / 10000 + (int)r.ResponseTime) / 1000)
+                .Where(r => r.Key < max)
                 .OrderBy(r => r.Key)
                 .Select(r => new DataPoint(r.Key, r.Count()));
 

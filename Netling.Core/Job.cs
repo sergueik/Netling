@@ -86,7 +86,7 @@ namespace Netling.Core
             return Process(_invocation_arguments.threads, _invocation_arguments.runs, _invocation_arguments.duration, processAction, cancellationToken);
         }
 
-        private JobResult<T> Process(int threads, int runs, TimeSpan duration, Func<IEnumerable<Task<T>>> processAction, CancellationToken cancellationToken = default(CancellationToken))
+        private JobResult<T> Process(int threads, int runs, TimeSpan duration, Func<int, IEnumerable<Task<T>>> processAction, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThreadPool.SetMinThreads(int.MaxValue, int.MaxValue);
 
