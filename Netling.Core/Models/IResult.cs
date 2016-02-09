@@ -1,4 +1,4 @@
-namespace Core.Models
+namespace Netling.Core.Models
 {
     public interface IResult
     {

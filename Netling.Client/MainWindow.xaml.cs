@@ -7,13 +7,13 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Core;
-using Core.Models;
+using Netling.Core;
+using Netling.Core.Models;
 using NUnit.Framework;
 using Newtonsoft.Json;
 
 
-namespace Client
+namespace Netling.Client
 {
     public partial class MainWindow : Window
     {

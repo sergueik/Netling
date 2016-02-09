@@ -159,9 +159,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{84ceec3f-5fcf-4ca5-a6d7-f83cf7ea0b52}</Project>
-      <Name>Core</Name>
+    <ProjectReference Include="..\Netling.Core\Netling.Core.csproj">
+      <Project>{84CEEC3F-5FCF-4CA5-A6D7-F83CF7EA0B52}</Project>
+      <Name>Netling.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{F3C21CA7-90AC-4119-9E10-26FC272E07AE}</Project>

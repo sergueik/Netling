@@ -5,14 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Models;
+using Netling.Core.Models;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using NUnit.Framework;
 using Newtonsoft.Json;
 
-namespace Core
+namespace Netling.Core
 {
 
     [DataContract]

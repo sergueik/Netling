@@ -10,7 +10,7 @@ using SQLite.Utils;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Core.Models;
+using Netling.Core.Models;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
@@ -19,7 +19,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using NUnit.Framework;
     
-namespace Client
+namespace Netling.Client
 {
     public partial class ResultWindow : Window
     {
