@@ -11,6 +11,10 @@ P.O.C. store subset of test result in SQLite database and load back into the Oxy
 Note
 ----
 `System.Data.SQLite`  is not mono-friendly. Plan to migrate to `Sqlite.net` 
+=======
+![Client](http://i.imgur.com/lSM5hGl.png)
+
+![Result window](http://i.imgur.com/NcgEkJh.png)
 
 Author
 ------
